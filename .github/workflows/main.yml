@@ -1,0 +1,24 @@
+name: Movie Quiz CI/CD
+
+on:
+  push:
+    branches: [ origin ]
+permissions:
+  contents: write
+
+jobs:
+  deploy-github-pages:
+    concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.5.1
+        
+      - name: npm install, build, and test example
+        working-directory: .
+        run: |
+          npm ci
+          npm run deploy
