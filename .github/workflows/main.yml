@@ -2,7 +2,7 @@ name: Movie Quiz CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 permissions:
   contents: write
 
@@ -13,12 +13,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v3.5.1
-        
-      - name: npm install, build, and test example
+
+      - name: npm install, build
         working-directory: .
         run: |
           npm ci
-          npm run deploy
+          npm run build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        # If you're changing the branch from main,
+        # also change the `main` in `refs/heads/main`
+        # below accordingly.
+        if: ${{ github.ref == 'refs/heads/main' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
